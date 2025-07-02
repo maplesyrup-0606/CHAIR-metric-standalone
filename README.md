@@ -11,6 +11,8 @@ Especially, i added a new metric `Recall` to calculate the percentage of recalle
 ## ⚠️ Important Note
 
 - The `hallucination_idxs` field of the output of the CHAIR evaluator is NOT correct when the caption have COCO double words (https://github.com/LisaAnne/Hallucination/issues/4). This problem may also exist in the original CHAIR repo and does not affect the calculation of CHAIR. If this field is necessary for your use case, please consider fixing it.
+- There are two extra newlines at the beginning and the end of the `synonyms_txt` variable in `chair.py` that should not be present. This introduces an empty string element in both `inverse_synonym_dict` and `mscoco_objects`. This should not affect the calculation of CHAIR, because `nltk.word_tokenize` results and `id_to_name[annotation['category_id']]` should not produce empty strings. If this issue affects your use case, you can fix it and rebuild the cache.
+
 
 ## Modifications
 
