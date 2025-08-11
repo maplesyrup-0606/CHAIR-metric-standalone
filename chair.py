@@ -325,7 +325,7 @@ class CHAIR(object):
                         'hallucination_idxs': [], 
                         'words': raw_words 
                         }
-
+            
             # :add:
             cap_dict['metrics'] = {'CHAIRs': 0,
                                    'CHAIRi': 0,
@@ -375,7 +375,8 @@ class CHAIR(object):
     
         output['overall_metrics'] = {'CHAIRs': chair_s,
                                      'CHAIRi': chair_i,
-                                     'Recall': recall}
+                                     'Recall': recall,
+                                     'F1': (2*recall*chair_s)/(recall+chair_s)}
     
         return output 
 
@@ -384,12 +385,22 @@ def load_generated_captions(cap_file, image_id_key:str, caption_key:str):
     # it should be list of dict
     ext = os.path.splitext(cap_file)[-1]
     if ext == '.json':
-        caps = json.load(open(cap_file))
+        caps = json.load(open(os.path.expanduser(cap_file)))
     elif ext == '.jsonl':
         caps = [json.loads(s) for s in open(cap_file)]
     else:
         raise ValueError(f'Unspported extension {ext} for cap_file: {cap_file}')
 
+    temp = []
+    for image_id, captions in caps.items():
+        temp.append(
+            {
+                "image_id" : int(image_id),
+                "caption" : captions[0]
+            }
+        )
+    caps = temp
+    
     # list of int
     imids = [obj[image_id_key] for obj in caps]
     
